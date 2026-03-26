@@ -1,0 +1,10 @@
+{
+  "name": "keldelcourt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone landing page and enquiry flow for KelDel Court.",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  }
+}

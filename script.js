@@ -101,7 +101,6 @@ function setupTabs(groupName) {
   });
 }
 
-setupTabs("rooms");
 setupTabs("floors");
 
 const revealTargets = document.querySelectorAll("[data-reveal]");
@@ -316,4 +315,24 @@ const yearNode = document.getElementById("current-year");
 
 if (yearNode) {
   yearNode.textContent = new Date().getFullYear();
+}
+
+const copyRouteButton = document.querySelector("[data-copy-text]");
+
+if (copyRouteButton) {
+  copyRouteButton.addEventListener("click", async () => {
+    const originalText = copyRouteButton.textContent;
+    const textToCopy = copyRouteButton.dataset.copyText || "";
+
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      copyRouteButton.textContent = "Address copied";
+    } catch (error) {
+      copyRouteButton.textContent = "Copy unavailable";
+    }
+
+    window.setTimeout(() => {
+      copyRouteButton.textContent = originalText;
+    }, 1800);
+  });
 }

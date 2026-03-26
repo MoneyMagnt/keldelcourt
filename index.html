@@ -38,7 +38,6 @@
 
     <nav class="site-nav" id="site-nav" aria-label="Primary">
       <a href="#about">About</a>
-      <a href="#showcase">Showcase</a>
       <a href="#gallery">Gallery</a>
       <a href="#floors">Floor Plans</a>
       <a href="#location">Location</a>
@@ -61,7 +60,7 @@
           double-height interiors, a full-floor master sanctuary, and a calm, contemporary material palette.
         </p>
         <div class="hero__actions">
-          <a class="button button--solid" href="#showcase">View Interior Showcase</a>
+          <a class="button button--solid" href="#gallery">View Photo Gallery</a>
           <a class="button button--ghost" href="#location">Find the Location</a>
         </div>
       </div>
@@ -197,192 +196,6 @@
         </article>
       </div>
     </section>
-    <section class="section section--showcase" id="showcase" data-reveal>
-      <div class="section-heading section-heading--inverse">
-        <div>
-          <p class="eyebrow eyebrow--inverse">Interior Showcase</p>
-          <h2 class="section-title section-title--inverse">Walk the house room by room.</h2>
-        </div>
-        <p class="section-copy section-copy--inverse">
-          The original prototype had the right sequence but the interaction layer was broken. This rebuild keeps the
-          same spaces and turns them into an accessible tabbed walkthrough.
-        </p>
-      </div>
-
-      <div class="tabs-shell" data-tab-group="rooms">
-        <div class="tablist" role="tablist" aria-label="Interior rooms">
-          <button id="tab-room-living" class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="panel-room-living" tabindex="0" data-tab="living">Living Room</button>
-          <button id="tab-room-kitchen" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-room-kitchen" tabindex="-1" data-tab="kitchen">Kitchen</button>
-          <button id="tab-room-bedroom" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-room-bedroom" tabindex="-1" data-tab="bedroom">Master Bedroom</button>
-          <button id="tab-room-closet" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-room-closet" tabindex="-1" data-tab="closet">Walk-In Closet</button>
-          <button id="tab-room-bathroom" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-room-bathroom" tabindex="-1" data-tab="bathroom">Spa Bathroom</button>
-          <button id="tab-room-office" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-room-office" tabindex="-1" data-tab="office">Private Office</button>
-          <button id="tab-room-exterior" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-room-exterior" tabindex="-1" data-tab="exterior">Exterior</button>
-        </div>
-
-        <article id="panel-room-living" class="room-panel is-active" role="tabpanel" aria-labelledby="tab-room-living" tabindex="0" data-panel="living">
-          <figure class="room-panel__image">
-            <img src="assets/showcase-living.png" alt="Double-height living room" loading="lazy" decoding="async">
-            <figcaption>Ground Floor &middot; Double-Height Living and Dining</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Ground Floor</p>
-            <h3>Living and dining with volume at the center.</h3>
-            <p>
-              This space carries the strongest emotional moment in the scheme. Full-height glazing, elevated void
-              space, and calm warm finishes create a first impression that feels both grand and controlled.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>Double-height ceiling volume</li>
-              <li>Open connection to dining</li>
-              <li>Floor-to-ceiling glazing</li>
-              <li>Premium marble flooring</li>
-              <li>Statement chandelier position</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="kitchen">Next room: Kitchen</button>
-          </div>
-        </article>
-
-        <article id="panel-room-kitchen" class="room-panel" role="tabpanel" aria-labelledby="tab-room-kitchen" tabindex="0" data-panel="kitchen" hidden>
-          <figure class="room-panel__image">
-            <img src="assets/showcase-kitchen.png" alt="Gourmet kitchen" loading="lazy" decoding="async">
-            <figcaption>Ground Floor &middot; Fully Fitted Gourmet Kitchen</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Ground Floor</p>
-            <h3>A social kitchen designed to photograph well and perform daily.</h3>
-            <p>
-              Marble surfaces, integrated appliances, and precise cabinetry give the kitchen a strong visual identity
-              while still reading as part of the larger home palette.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>Marble slab backsplash</li>
-              <li>Integrated premium appliances</li>
-              <li>Handleless custom cabinetry</li>
-              <li>Large preparation surfaces</li>
-              <li>Daylight from side glazing</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="bedroom">Next room: Master Bedroom</button>
-          </div>
-        </article>
-
-        <article id="panel-room-bedroom" class="room-panel" role="tabpanel" aria-labelledby="tab-room-bedroom" tabindex="0" data-panel="bedroom" hidden>
-          <figure class="room-panel__image">
-            <img src="assets/showcase-bedroom.png" alt="Master bedroom" loading="lazy" decoding="async">
-            <figcaption>Second Floor &middot; Full Master Suite Level</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Second Floor Master Suite</p>
-            <h3>The owner&apos;s suite becomes an entire private floor.</h3>
-            <p>
-              The master bedroom is less about excess and more about calm scale. The proportions feel generous,
-              circulation is private, and the room connects naturally to the office, closet, bath, and terrace.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>Oversized bedroom footprint</li>
-              <li>Integrated dressing zone</li>
-              <li>Soft layered lighting</li>
-              <li>Long drape-ready glazing line</li>
-              <li>Direct access to the private suite amenities</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="closet">Next room: Walk-In Closet</button>
-          </div>
-        </article>
-
-        <article id="panel-room-closet" class="room-panel" role="tabpanel" aria-labelledby="tab-room-closet" tabindex="0" data-panel="closet" hidden>
-          <figure class="room-panel__image">
-            <img src="assets/showcase-closet.png" alt="Walk-in closet" loading="lazy" decoding="async">
-            <figcaption>Second Floor &middot; Dressing Room with Central Island</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Second Floor Master Suite</p>
-            <h3>A dressing room treated as a featured room, not a leftover utility space.</h3>
-            <p>
-              Dark wood tones, display shelving, and chandelier lighting give the closet the same level of care as the
-              living spaces. It is one of the clearest signals that the project understands its market.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>Chandelier focal point</li>
-              <li>Central island storage</li>
-              <li>Custom cabinet walls</li>
-              <li>Open display shelving</li>
-              <li>Warm indirect lighting</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="bathroom">Next room: Spa Bathroom</button>
-          </div>
-        </article>
-
-        <article id="panel-room-bathroom" class="room-panel" role="tabpanel" aria-labelledby="tab-room-bathroom" tabindex="0" data-panel="bathroom" hidden>
-          <figure class="room-panel__image">
-            <img src="assets/showcase-bathroom.png" alt="Spa bathroom" loading="lazy" decoding="async">
-            <figcaption>Second Floor &middot; Marble-Lined Spa Bathroom</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Second Floor Master Suite</p>
-            <h3>Hotel-grade finishes with a residential sense of calm.</h3>
-            <p>
-              The bathroom render sells aspiration immediately: stone surfaces, tub placement, glazing, and light
-              treatment all lean into a slow, restorative atmosphere.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>Calacatta-style marble surfaces</li>
-              <li>Glass-enclosed rain shower</li>
-              <li>Freestanding soaking tub</li>
-              <li>Garden-facing glazing</li>
-              <li>Luxury fixture specification</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="office">Next room: Private Office</button>
-          </div>
-        </article>
-
-        <article id="panel-room-office" class="room-panel" role="tabpanel" aria-labelledby="tab-room-office" tabindex="0" data-panel="office" hidden>
-          <figure class="room-panel__image">
-            <img src="assets/showcase-office.png" alt="Private office" loading="lazy" decoding="async">
-            <figcaption>Second Floor &middot; Executive Home Office</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Second Floor Master Suite</p>
-            <h3>A private workspace built into the master world.</h3>
-            <p>
-              This is one of the smartest planning decisions in the project. It extends the idea of the master suite
-              from sleeping space into a complete lifestyle level.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>Dedicated executive workspace</li>
-              <li>Acoustic wall treatment</li>
-              <li>Fitted desk position</li>
-              <li>Layered lighting design</li>
-              <li>Visual separation from the family floors</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="exterior">Next room: Exterior</button>
-          </div>
-        </article>
-
-        <article id="panel-room-exterior" class="room-panel" role="tabpanel" aria-labelledby="tab-room-exterior" tabindex="0" data-panel="exterior" hidden>
-          <figure class="room-panel__image">
-            <img src="assets/showcase-exterior.png" alt="KelDel Court exterior render" loading="lazy" decoding="async">
-            <figcaption>Architectural Render &middot; WestLands, Accra</figcaption>
-          </figure>
-          <div class="room-panel__copy">
-            <p class="panel-label panel-label--accent">Architectural Expression</p>
-            <h3>Clean white massing with a market-ready silhouette.</h3>
-            <p>
-              The facade is contemporary without drifting into novelty. The vertical ribs, glazing pattern, and
-              pergola lines give the development a recognisable image, which matters for both sales and brand recall.
-            </p>
-            <ul class="detail-list detail-list--inverse">
-              <li>White render and shadow lines</li>
-              <li>Full-height framed glazing</li>
-              <li>Rooftop pergola terraces</li>
-              <li>Covered parking for multiple vehicles</li>
-              <li>Pair of matching residences</li>
-            </ul>
-            <button class="subtle-link" type="button" data-activate-tab="living">Return to Living Room</button>
-          </div>
-        </article>
-      </div>
-    </section>
-
     <section class="section section--gallery" id="gallery" data-reveal>
       <div class="section-heading">
         <div>
@@ -537,6 +350,56 @@
             quieter premium neighbourhood feel.
           </p>
 
+          <div class="location-guide">
+            <div class="guide-panel guide-panel--primary">
+              <p class="panel-label">Quick Directions</p>
+              <h3>Open the pin first. If needed, share or call while you are on the way.</h3>
+              <p>
+                This follows the clearer action-first direction style used on zyragh: immediate route actions first,
+                then the supporting location details underneath. It is faster for mobile visitors than forcing them to
+                interpret the embedded map.
+              </p>
+
+              <div class="direction-actions">
+                <a class="direction-button direction-button--maps" href="https://maps.app.goo.gl/FYV17hrn2WChyCcw8" target="_blank" rel="noopener">
+                  Open Google Maps
+                </a>
+                <a class="direction-button direction-button--chat" href="https://wa.me/233244165817?text=Hi%2C%20I%20need%20directions%20to%20KelDel%20Court%20in%20WestLands%2C%20Accra." target="_blank" rel="noopener">
+                  Ask on WhatsApp
+                </a>
+                <a class="direction-button direction-button--call" href="tel:+233244165817">
+                  Call for route help
+                </a>
+              </div>
+            </div>
+
+            <div class="guide-facts">
+              <article class="guide-fact">
+                <p class="panel-label">Area</p>
+                <h3>WestLands</h3>
+                <span>Accra, Ghana</span>
+              </article>
+              <article class="guide-fact">
+                <p class="panel-label">Map Pin</p>
+                <h3>5.6551, -0.1942</h3>
+                <span>Use this if you are sharing the destination manually.</span>
+              </article>
+              <article class="guide-fact">
+                <p class="panel-label">Nearby Landmark</p>
+                <h3>University of Ghana &amp; GIMPA</h3>
+                <span>Roughly 2 minutes away by road.</span>
+              </article>
+            </div>
+
+            <button
+              class="copy-route"
+              type="button"
+              data-copy-text="KelDel Court, WestLands, Accra, Ghana. Google Maps pin: 5.6551, -0.1942. Nearby landmark: University of Ghana and GIMPA."
+            >
+              Copy address for driver
+            </button>
+          </div>
+
           <div class="journey-list">
             <article class="journey-card">
               <span class="journey-card__time">10 min</span>
@@ -679,7 +542,6 @@
     </div>
     <div class="site-footer__links">
       <a href="#about">About</a>
-      <a href="#showcase">Showcase</a>
       <a href="#gallery">Gallery</a>
       <a href="#floors">Floor Plans</a>
       <a href="#location">Location</a>
@@ -687,6 +549,15 @@
     </div>
     <p class="site-footer__copy">&copy; <span id="current-year"></span> KelDel Court. All rights reserved.</p>
   </footer>
+
+  <div class="mobile-locate-bar">
+    <a class="mobile-locate-bar__maps" href="https://maps.app.goo.gl/FYV17hrn2WChyCcw8" target="_blank" rel="noopener">
+      Open Maps
+    </a>
+    <a class="mobile-locate-bar__chat" href="https://wa.me/233244165817?text=Hi%2C%20I%20need%20directions%20to%20KelDel%20Court%20in%20WestLands%2C%20Accra." target="_blank" rel="noopener" aria-label="Ask for directions on WhatsApp">
+      WhatsApp
+    </a>
+  </div>
 
   <dialog class="lightbox" id="gallery-dialog" aria-labelledby="lightbox-title">
     <form method="dialog" class="lightbox__close-wrap">
