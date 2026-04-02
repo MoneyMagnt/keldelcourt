@@ -1,6 +1,6 @@
+const pageBody = document.body;
 const menuToggle = document.querySelector(".menu-toggle");
 const siteNav = document.querySelector(".site-nav");
-const pageBody = document.body;
 
 function closeMenu() {
   if (!menuToggle || !siteNav) {
@@ -59,14 +59,11 @@ function setupTabs(groupName) {
   const moveFocus = (currentTab, direction) => {
     const currentIndex = tabs.indexOf(currentTab);
     const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
-    const nextTab = tabs[nextIndex];
-    activateTab(nextTab.dataset.tab, true);
+    activateTab(tabs[nextIndex].dataset.tab, true);
   };
 
   tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      activateTab(tab.dataset.tab);
-    });
+    tab.addEventListener("click", () => activateTab(tab.dataset.tab));
 
     tab.addEventListener("keydown", (event) => {
       switch (event.key) {
@@ -93,15 +90,122 @@ function setupTabs(groupName) {
       }
     });
   });
+}
 
-  group.querySelectorAll("[data-activate-tab]").forEach((button) => {
-    button.addEventListener("click", () => {
-      activateTab(button.dataset.activateTab, true);
+function setupZoneOverviews() {
+  document.querySelectorAll(".space-overview").forEach((overview) => {
+    const pills = Array.from(overview.querySelectorAll("[data-zone-target]"));
+    const details = Array.from(overview.querySelectorAll("[data-zone-detail]"));
+
+    if (!pills.length || !details.length) {
+      return;
+    }
+
+    const showDetail = (detailId) => {
+      pills.forEach((pill) => {
+        const isActive = pill.dataset.zoneTarget === detailId;
+        pill.classList.toggle("is-active", isActive);
+        pill.setAttribute("aria-pressed", String(isActive));
+      });
+
+      details.forEach((detail) => {
+        const isActive = detail.id === detailId;
+        detail.classList.toggle("is-visible", isActive);
+        detail.hidden = !isActive;
+      });
+    };
+
+    pills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        showDetail(pill.dataset.zoneTarget);
+      });
     });
+
+    const initialPill = pills.find((pill) => pill.classList.contains("is-active")) || pills[0];
+    showDetail(initialPill.dataset.zoneTarget);
   });
 }
 
+function setupShowcaseSlider() {
+  const showcaseTrack = document.getElementById("showcase-track");
+
+  if (!showcaseTrack) {
+    return;
+  }
+
+  const slides = Array.from(showcaseTrack.querySelectorAll(".slide"));
+  const dots = Array.from(document.querySelectorAll("[data-slide-dot]"));
+  const prevButton = document.querySelector("[data-slider-nav='prev']");
+  const nextButton = document.querySelector("[data-slider-nav='next']");
+  let activeIndex = 0;
+
+  const updateControls = (index) => {
+    activeIndex = index;
+
+    dots.forEach((dot, dotIndex) => {
+      const isActive = dotIndex === activeIndex;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-selected", String(isActive));
+    });
+
+    if (prevButton) {
+      prevButton.disabled = activeIndex === 0;
+      prevButton.style.opacity = activeIndex === 0 ? "0.35" : "1";
+    }
+
+    if (nextButton) {
+      nextButton.disabled = activeIndex === slides.length - 1;
+      nextButton.style.opacity = activeIndex === slides.length - 1 ? "0.35" : "1";
+    }
+  };
+
+  const goToSlide = (index, behavior = "smooth") => {
+    const nextIndex = Math.max(0, Math.min(index, slides.length - 1));
+    showcaseTrack.scrollTo({
+      left: nextIndex * showcaseTrack.clientWidth,
+      behavior,
+    });
+    updateControls(nextIndex);
+  };
+
+  let scrollTimer;
+
+  showcaseTrack.addEventListener(
+    "scroll",
+    () => {
+      window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        const nextIndex = Math.round(showcaseTrack.scrollLeft / showcaseTrack.clientWidth);
+        updateControls(nextIndex);
+      }, 70);
+    },
+    { passive: true }
+  );
+
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      goToSlide(Number(dot.dataset.slideDot || 0));
+    });
+  });
+
+  prevButton?.addEventListener("click", () => {
+    goToSlide(activeIndex - 1);
+  });
+
+  nextButton?.addEventListener("click", () => {
+    goToSlide(activeIndex + 1);
+  });
+
+  window.addEventListener("resize", () => {
+    goToSlide(activeIndex, "auto");
+  });
+
+  updateControls(0);
+}
+
 setupTabs("floors");
+setupZoneOverviews();
+setupShowcaseSlider();
 
 const revealTargets = document.querySelectorAll("[data-reveal]");
 
@@ -134,6 +238,7 @@ const lightboxImage = document.getElementById("lightbox-image");
 const lightboxTitle = document.getElementById("lightbox-title");
 const lightboxMeta = document.getElementById("lightbox-meta");
 const lightboxNavButtons = document.querySelectorAll("[data-lightbox-nav]");
+const lightboxCloseButton = document.querySelector("[data-lightbox-close]");
 let activeGalleryIndex = 0;
 
 function renderLightbox(index) {
@@ -143,21 +248,18 @@ function renderLightbox(index) {
 
   activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
   const activeItem = galleryItems[activeGalleryIndex];
-  const imageSrc = activeItem.dataset.image;
-  const title = activeItem.dataset.title;
-  const meta = activeItem.dataset.meta;
 
   if (lightboxImage) {
-    lightboxImage.src = imageSrc;
-    lightboxImage.alt = title;
+    lightboxImage.src = activeItem.dataset.image || "";
+    lightboxImage.alt = activeItem.dataset.title || "Gallery image";
   }
 
   if (lightboxTitle) {
-    lightboxTitle.textContent = title;
+    lightboxTitle.textContent = activeItem.dataset.title || "Gallery image";
   }
 
   if (lightboxMeta) {
-    lightboxMeta.textContent = meta;
+    lightboxMeta.textContent = activeItem.dataset.meta || "";
   }
 }
 
@@ -191,9 +293,7 @@ function closeLightbox() {
 }
 
 galleryItems.forEach((item, index) => {
-  item.addEventListener("click", () => {
-    openLightbox(index);
-  });
+  item.addEventListener("click", () => openLightbox(index));
 });
 
 lightboxNavButtons.forEach((button) => {
@@ -203,18 +303,25 @@ lightboxNavButtons.forEach((button) => {
   });
 });
 
+lightboxCloseButton?.addEventListener("click", closeLightbox);
+
 if (galleryDialog) {
   galleryDialog.addEventListener("close", () => {
     pageBody.classList.remove("dialog-open");
   });
 
+  galleryDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeLightbox();
+  });
+
   galleryDialog.addEventListener("click", (event) => {
-    const dialogBounds = galleryDialog.getBoundingClientRect();
+    const bounds = galleryDialog.getBoundingClientRect();
     const isInsideDialog =
-      event.clientX >= dialogBounds.left &&
-      event.clientX <= dialogBounds.right &&
-      event.clientY >= dialogBounds.top &&
-      event.clientY <= dialogBounds.bottom;
+      event.clientX >= bounds.left &&
+      event.clientX <= bounds.right &&
+      event.clientY >= bounds.top &&
+      event.clientY <= bounds.bottom;
 
     if (!isInsideDialog) {
       closeLightbox();
@@ -252,15 +359,15 @@ if (interestForm && formFeedback) {
     }
 
     if (window.location.protocol === "file:") {
+      formFeedback.dataset.state = "error";
       formFeedback.textContent =
-        "Serve or deploy this project from a web server before testing live submissions. The API route is not available from a file:// preview.";
+        "Serve or deploy this project from a web server before testing live submissions. The API route is not available from a file preview.";
       return;
     }
 
     const formData = new FormData(interestForm);
-    const firstName = formData.get("firstName");
     const submitButton = interestForm.querySelector("button[type='submit']");
-    const originalButtonText = submitButton ? submitButton.textContent : "";
+    const originalLabel = submitButton ? submitButton.textContent : "";
     const payload = {
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
@@ -270,12 +377,13 @@ if (interestForm && formFeedback) {
       message: formData.get("message"),
     };
 
+    formFeedback.textContent = "";
+    formFeedback.dataset.state = "";
+
     if (submitButton) {
       submitButton.disabled = true;
       submitButton.textContent = "Sending...";
     }
-
-    formFeedback.textContent = "";
 
     try {
       const response = await fetch(interestForm.action || "/api/enquiry", {
@@ -296,43 +404,65 @@ if (interestForm && formFeedback) {
         throw new Error(result.message || "The enquiry could not be sent right now.");
       }
 
-      formFeedback.textContent =
-        result.message || `Thank you${firstName ? `, ${firstName}` : ""}. Your enquiry has been sent.`;
+      formFeedback.dataset.state = "success";
+      formFeedback.textContent = result.message || "Thank you. Your enquiry has been sent.";
       interestForm.reset();
     } catch (error) {
+      formFeedback.dataset.state = "error";
       formFeedback.textContent =
         error instanceof Error ? error.message : "The enquiry could not be sent right now. Please try again.";
     } finally {
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = originalButtonText;
+        submitButton.textContent = originalLabel;
       }
     }
   });
 }
 
-const yearNode = document.getElementById("current-year");
-
-if (yearNode) {
-  yearNode.textContent = new Date().getFullYear();
-}
-
-const copyRouteButton = document.querySelector("[data-copy-text]");
-
-if (copyRouteButton) {
-  copyRouteButton.addEventListener("click", async () => {
-    const originalText = copyRouteButton.textContent;
-    const textToCopy = copyRouteButton.dataset.copyText || "";
+document.querySelectorAll("[data-copy-text]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const originalText = button.textContent;
+    const copyText = button.dataset.copyText || "";
 
     try {
-      await navigator.clipboard.writeText(textToCopy);
-      copyRouteButton.textContent = "Address copied";
+      await navigator.clipboard.writeText(copyText);
+      button.textContent = "Address copied";
     } catch (error) {
-      copyRouteButton.textContent = "Copy unavailable";
+      button.textContent = "Copy unavailable";
     }
 
     window.setTimeout(() => {
-      copyRouteButton.textContent = originalText;
+      button.textContent = originalText;
     }, 1800);
   });
+});
+
+document.querySelectorAll("[data-directions-link]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+      return;
+    }
+
+    const latitude = link.dataset.lat;
+    const longitude = link.dataset.lng;
+
+    if (!latitude || !longitude) {
+      return;
+    }
+
+    event.preventDefault();
+    window.location.href = `geo:${latitude},${longitude}?q=${latitude},${longitude}(KelDel Court)`;
+    window.setTimeout(() => {
+      window.open(link.href, "_blank", "noopener");
+    }, 500);
+  });
+});
+
+const yearNode = document.getElementById("current-year");
+
+if (yearNode) {
+  yearNode.textContent = String(new Date().getFullYear());
 }
