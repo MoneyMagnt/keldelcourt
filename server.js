@@ -50,7 +50,7 @@ const server = http.createServer(async (request, response) => {
   const requestUrl = new URL(request.url, `http://${request.headers.host || "localhost"}`);
   const pathname = requestUrl.pathname;
 
-  if (pathname === "/api/enquiry") {
+  if (pathname === "/api/enquiry" || (pathname === "/" && request.method === "POST")) {
     try {
       await enquiryHandler(request, response);
     } catch (error) {

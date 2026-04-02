@@ -299,6 +299,8 @@ const formStatus = document.getElementById("formStatus");
 
 if (form && formSubmitButton && formStatus) {
   let statusTimer = null;
+  const defaultSuccessMessage = "Thank you. Your enquiry has been sent to the KelDel Court team.";
+  const defaultErrorMessage = "The enquiry could not be delivered right now. Please try again.";
 
   const clearStatusTimer = () => {
     if (statusTimer) {
@@ -325,34 +327,42 @@ if (form && formSubmitButton && formStatus) {
     }
 
     const formData = new FormData(form);
-    const payload = {
-      firstName: String(formData.get("firstName") || "").trim(),
-      lastName: String(formData.get("lastName") || "").trim(),
-      email: String(formData.get("email") || "").trim(),
-      phone: String(formData.get("phone") || "").trim(),
-      enquiryType: String(formData.get("enquiryType") || "").trim(),
-      message: String(formData.get("message") || "").trim(),
-    };
+
+    formData.set("firstName", String(formData.get("firstName") || "").trim());
+    formData.set("lastName", String(formData.get("lastName") || "").trim());
+    formData.set("email", String(formData.get("email") || "").trim());
+    formData.set("phone", String(formData.get("phone") || "").trim());
+    formData.set("enquiryType", String(formData.get("enquiryType") || "").trim());
+    formData.set("message", String(formData.get("message") || "").trim());
 
     setFormState("busy");
 
     try {
-      const response = await fetch("/api/enquiry", {
+      const response = await fetch("/", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify(payload),
+        body: new URLSearchParams(formData).toString(),
       });
 
-      const data = await response.json().catch(() => ({}));
+      const contentType = response.headers.get("content-type") || "";
+      let responseMessage = defaultSuccessMessage;
 
-      if (!response.ok || !data.ok) {
-        throw new Error(data.message || "The enquiry could not be delivered right now. Please try again.");
+      if (contentType.includes("application/json")) {
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || defaultErrorMessage);
+        }
+
+        responseMessage = data.message || responseMessage;
+      } else if (!response.ok) {
+        throw new Error(defaultErrorMessage);
       }
 
       form.reset();
-      formStatus.textContent = data.message || "Thank you. Your enquiry has been sent to the KelDel Court team.";
+      formStatus.textContent = responseMessage;
       setFormState("success");
 
       statusTimer = window.setTimeout(() => {
@@ -362,7 +372,7 @@ if (form && formSubmitButton && formStatus) {
       formStatus.textContent =
         error instanceof Error && error.message
           ? error.message
-          : "The enquiry could not be delivered right now. Please try again.";
+          : defaultErrorMessage;
       setFormState("error");
 
       statusTimer = window.setTimeout(() => {

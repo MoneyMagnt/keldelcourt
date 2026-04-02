@@ -534,7 +534,20 @@
         <p class="section-body">Register your interest today to receive priority access, detailed floor plans, and personalised guidance from our sales team.</p>
 
         <div class="contact-grid">
-          <form class="contact-form" id="interestForm" novalidate>
+          <form
+            class="contact-form"
+            id="interestForm"
+            name="keldel-court-enquiry"
+            method="POST"
+            action="/"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            novalidate
+          >
+            <input type="hidden" name="form-name" value="keldel-court-enquiry">
+            <p class="sr-only" aria-hidden="true">
+              <label>Leave this field empty <input name="bot-field" autocomplete="off" tabindex="-1"></label>
+            </p>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="firstName">First Name</label>
