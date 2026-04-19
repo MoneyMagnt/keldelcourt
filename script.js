@@ -1,6 +1,7 @@
 const pageBody = document.body;
 const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
+const heroVideo = document.querySelector(".hero-video");
 
 function closeMenu() {
   if (!navToggle || !navMenu) {
@@ -72,6 +73,100 @@ document.querySelectorAll("[data-scroll-target]").forEach((trigger) => {
 
 const floorTabs = Array.from(document.querySelectorAll(".ftab[data-floor-target]"));
 const floorPanels = Array.from(document.querySelectorAll("[data-floor-panel]"));
+const floorVideos = Array.from(document.querySelectorAll(".floor-video"));
+
+function ensureVideoSource(video) {
+  if (!video) {
+    return false;
+  }
+
+  if (video.currentSrc || video.getAttribute("src")) {
+    return true;
+  }
+
+  const deferredSource = video.dataset.src;
+
+  if (!deferredSource) {
+    return false;
+  }
+
+  video.setAttribute("src", deferredSource);
+  return true;
+}
+
+function startVideoPlayback(video, { resetToStart = false } = {}) {
+  if (!ensureVideoSource(video)) {
+    return;
+  }
+
+  const play = () => {
+    if (resetToStart && video.readyState >= 1 && video.currentTime > 0.2) {
+      try {
+        video.currentTime = 0;
+      } catch (error) {}
+    }
+
+    const playAttempt = video.play();
+
+    if (playAttempt && typeof playAttempt.catch === "function") {
+      playAttempt.catch(() => {});
+    }
+  };
+
+  if (video.readyState >= 2) {
+    play();
+    return;
+  }
+
+  video.load();
+  video.addEventListener("loadeddata", play, { once: true });
+  video.addEventListener("canplay", play, { once: true });
+}
+
+function playHeroVideo() {
+  if (!heroVideo || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  heroVideo.muted = true;
+  heroVideo.playsInline = true;
+  heroVideo.autoplay = true;
+  heroVideo.loop = true;
+
+  startVideoPlayback(heroVideo);
+}
+
+function stopFloorVideo(video) {
+  video.pause();
+
+  if (video.readyState >= 1) {
+    try {
+      video.currentTime = 0;
+    } catch (error) {}
+  }
+}
+
+function playFloorVideo(video) {
+  video.muted = true;
+  video.playsInline = true;
+  video.autoplay = true;
+  video.loop = true;
+  startVideoPlayback(video, { resetToStart: true });
+}
+
+function syncFloorVideos(activeFloorId) {
+  floorVideos.forEach((video) => {
+    const panel = video.closest("[data-floor-panel]");
+    const isActive = panel?.dataset.floorPanel === activeFloorId;
+
+    if (!isActive) {
+      stopFloorVideo(video);
+      return;
+    }
+
+    playFloorVideo(video);
+  });
+}
 
 function activateFloor(floorId, shouldFocus = false) {
   floorTabs.forEach((tab) => {
@@ -90,6 +185,8 @@ function activateFloor(floorId, shouldFocus = false) {
     panel.classList.toggle("active", isActive);
     panel.hidden = !isActive;
   });
+
+  syncFloorVideos(floorId);
 }
 
 if (floorTabs.length > 0 && floorPanels.length > 0) {
@@ -133,6 +230,50 @@ if (floorTabs.length > 0 && floorPanels.length > 0) {
   const activeTab = floorTabs.find((tab) => tab.classList.contains("active")) || floorTabs[0];
   activateFloor(activeTab.dataset.floorTarget);
 }
+
+if (heroVideo) {
+  const heroSection = heroVideo.closest(".hero");
+
+  if ("IntersectionObserver" in window && heroSection) {
+    const heroObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          playHeroVideo();
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.35,
+      }
+    );
+
+    heroObserver.observe(heroSection);
+  } else {
+    window.addEventListener("load", playHeroVideo, { once: true });
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") {
+    heroVideo?.pause();
+    floorVideos.forEach((video) => {
+      video.pause();
+    });
+    return;
+  }
+
+  playHeroVideo();
+
+  const activePanel = floorPanels.find((panel) => !panel.hidden);
+
+  if (activePanel) {
+    syncFloorVideos(activePanel.dataset.floorPanel);
+  }
+});
 
 const sliderTrack = document.getElementById("sliderTrack");
 const sliderPrev = document.getElementById("sliderPrev");
