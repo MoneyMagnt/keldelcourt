@@ -440,6 +440,7 @@ const formStatus = document.getElementById("formStatus");
 
 if (form && formSubmitButton && formStatus) {
   let statusTimer = null;
+  const submissionEndpoint = form.getAttribute("action") || "/api/enquiry";
   const defaultSuccessMessage = "Thank you. Your enquiry has been sent to the KelDel Court team.";
   const defaultErrorMessage = "The enquiry could not be delivered right now. Please try again.";
 
@@ -479,7 +480,7 @@ if (form && formSubmitButton && formStatus) {
     setFormState("busy");
 
     try {
-      const response = await fetch("/", {
+      const response = await fetch(submissionEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

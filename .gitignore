@@ -1,11 +1,23 @@
 .env
 .env.local
 .env.*.local
+.dev.vars
+.dev.vars.*
 .vercel
 .netlify
+.wrangler
 node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 dist
 build
+
+# Generated local media extraction artifacts
+public/assets/video-frames/
+public/assets/video-frames-detail/
+public/assets/floor-*-detail.png
+
+# Scratch / ad hoc reference files
+reference/zyragh-events.html
+tmp-extract.ps1

@@ -601,12 +601,9 @@
             id="interestForm"
             name="keldel-court-enquiry"
             method="POST"
-            action="/"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
+            action="/api/enquiry"
             novalidate
           >
-            <input type="hidden" name="form-name" value="keldel-court-enquiry">
             <p class="sr-only" aria-hidden="true">
               <label>Leave this field empty <input name="bot-field" autocomplete="off" tabindex="-1"></label>
             </p>
@@ -655,8 +652,8 @@
             <div class="contact-item">
               <div class="citem-icon">&#9993;</div>
               <div>
-                <div class="citem-label">Email</div>
-                <div class="citem-text">[email&nbsp;protected]</div>
+                <div class="citem-label">Enquiry Form</div>
+                <div class="citem-text"><a href="#interestForm">Submit your enquiry here</a></div>
               </div>
             </div>
 
@@ -702,7 +699,7 @@
         <div class="footer-logo">Kel<span>Del</span> Court</div>
         <div class="footer-tag">Luxury Residences &middot; WestLands &middot; Accra, Ghana</div>
         <div class="footer-contacts">
-          <span>[email&nbsp;protected]</span>
+          <a href="#interestForm">Submit Enquiry</a>
           <a href="tel:+233244165817">+233 244 165 817</a>
           <a href="tel:+233541005380">+233 54 100 5380</a>
         </div>

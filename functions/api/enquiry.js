@@ -1,43 +1,36 @@
 const successMessage = "Thank you. Your enquiry has been sent to the KelDel Court team.";
+const configErrorMessage =
+  "The enquiry service is not configured yet. Add one of the environment-based delivery targets before going live.";
+const deliveryErrorMessage = "The enquiry could not be delivered right now. Please try again.";
 
-function sendJson(response, statusCode, payload) {
-  response.statusCode = statusCode;
-  response.setHeader("Content-Type", "application/json; charset=utf-8");
-  response.end(JSON.stringify(payload));
+function jsonResponse(status, payload, headers = {}) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      ...headers,
+    },
+  });
 }
 
 async function readBody(request) {
-  if (request.body && typeof request.body === "object") {
-    return request.body;
-  }
-
-  if (typeof request.body === "string" && request.body.length > 0) {
-    try {
-      return JSON.parse(request.body);
-    } catch (error) {
-      return {};
-    }
-  }
-
-  const chunks = [];
-
-  for await (const chunk of request) {
-    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-  }
-
-  if (chunks.length === 0) {
-    return {};
-  }
-
-  const rawBody = Buffer.concat(chunks).toString("utf8");
-  const contentType = request.headers["content-type"] || "";
+  const contentType = request.headers.get("content-type") || "";
 
   if (contentType.includes("application/json")) {
-    return JSON.parse(rawBody);
+    const body = await request.json().catch(() => ({}));
+    return body && typeof body === "object" ? body : {};
   }
 
-  if (contentType.includes("application/x-www-form-urlencoded")) {
-    return Object.fromEntries(new URLSearchParams(rawBody));
+  if (
+    contentType.includes("application/x-www-form-urlencoded") ||
+    contentType.includes("multipart/form-data")
+  ) {
+    const formData = await request.formData();
+
+    return Object.fromEntries(
+      Array.from(formData.entries(), ([key, value]) => [key, typeof value === "string" ? value : ""])
+    );
   }
 
   return {};
@@ -114,8 +107,12 @@ function buildHtmlEmail(payload) {
   `.trim();
 }
 
-async function deliverToCrm(payload) {
-  const response = await fetch(process.env.CRM_WEBHOOK_URL, {
+function getEnvValue(env, key) {
+  return typeof env?.[key] === "string" ? env[key].trim() : "";
+}
+
+async function deliverToCrm(payload, env) {
+  const response = await fetch(getEnvValue(env, "CRM_WEBHOOK_URL"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -133,16 +130,16 @@ async function deliverToCrm(payload) {
   }
 }
 
-async function deliverWithResend(payload) {
+async function deliverWithResend(payload, env) {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      Authorization: `Bearer ${getEnvValue(env, "RESEND_API_KEY")}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: process.env.RESEND_FROM_EMAIL,
-      to: [process.env.KELDEL_COURT_TO_EMAIL],
+      from: getEnvValue(env, "RESEND_FROM_EMAIL"),
+      to: [getEnvValue(env, "KELDEL_COURT_TO_EMAIL")],
       reply_to: payload.email,
       subject: `KelDel Court enquiry: ${payload.enquiryType}`,
       text: buildPlainTextEmail(payload),
@@ -155,8 +152,8 @@ async function deliverWithResend(payload) {
   }
 }
 
-async function deliverToFormspree(payload) {
-  const response = await fetch(process.env.FORMSPREE_ENDPOINT, {
+async function deliverToFormspree(payload, env) {
+  const response = await fetch(getEnvValue(env, "FORMSPREE_ENDPOINT"), {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -179,23 +176,23 @@ async function deliverToFormspree(payload) {
   }
 }
 
-async function deliverSubmission(payload) {
-  if (process.env.CRM_WEBHOOK_URL) {
-    await deliverToCrm(payload);
+async function deliverSubmission(payload, env) {
+  if (getEnvValue(env, "CRM_WEBHOOK_URL")) {
+    await deliverToCrm(payload, env);
     return "crm";
   }
 
   if (
-    process.env.RESEND_API_KEY &&
-    process.env.RESEND_FROM_EMAIL &&
-    process.env.KELDEL_COURT_TO_EMAIL
+    getEnvValue(env, "RESEND_API_KEY") &&
+    getEnvValue(env, "RESEND_FROM_EMAIL") &&
+    getEnvValue(env, "KELDEL_COURT_TO_EMAIL")
   ) {
-    await deliverWithResend(payload);
+    await deliverWithResend(payload, env);
     return "resend";
   }
 
-  if (process.env.FORMSPREE_ENDPOINT) {
-    await deliverToFormspree(payload);
+  if (getEnvValue(env, "FORMSPREE_ENDPOINT")) {
+    await deliverToFormspree(payload, env);
     return "formspree";
   }
 
@@ -204,32 +201,39 @@ async function deliverSubmission(payload) {
   );
 }
 
-module.exports = async function handler(request, response) {
-  if (request.method === "OPTIONS") {
-    response.statusCode = 204;
-    response.end();
-    return;
+export async function onRequest(context) {
+  if (context.request.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        Allow: "POST, OPTIONS",
+      },
+    });
   }
 
-  if (request.method !== "POST") {
-    sendJson(response, 405, {
-      ok: false,
-      message: "Method not allowed. Use POST.",
-    });
-    return;
+  if (context.request.method !== "POST") {
+    return jsonResponse(
+      405,
+      {
+        ok: false,
+        message: "Method not allowed. Use POST.",
+      },
+      {
+        Allow: "POST, OPTIONS",
+      }
+    );
   }
 
   try {
-    const body = await readBody(request);
+    const body = await readBody(context.request);
     const honeypot = normalizeField(body["bot-field"]);
 
     if (honeypot) {
-      sendJson(response, 200, {
+      return jsonResponse(200, {
         ok: true,
         channel: "filtered",
         message: successMessage,
       });
-      return;
     }
 
     const payload = {
@@ -245,31 +249,27 @@ module.exports = async function handler(request, response) {
     const errors = validateSubmission(payload);
 
     if (errors.length > 0) {
-      sendJson(response, 400, {
+      return jsonResponse(400, {
         ok: false,
         message: errors[0],
         errors,
       });
-      return;
     }
 
-    const channel = await deliverSubmission(payload);
+    const channel = await deliverSubmission(payload, context.env);
 
-    sendJson(response, 200, {
+    return jsonResponse(200, {
       ok: true,
       channel,
       message: successMessage,
     });
   } catch (error) {
-    const isConfigError =
-      typeof error.message === "string" &&
-      error.message.includes("No delivery target is configured");
+    const message = error instanceof Error ? error.message : "";
+    const isConfigError = message.includes("No delivery target is configured");
 
-    sendJson(response, isConfigError ? 500 : 502, {
+    return jsonResponse(isConfigError ? 500 : 502, {
       ok: false,
-      message: isConfigError
-        ? "The enquiry service is not configured yet. Add one of the environment-based delivery targets before going live."
-        : "The enquiry could not be delivered right now. Please try again.",
+      message: isConfigError ? configErrorMessage : deliveryErrorMessage,
     });
   }
-};
+}
