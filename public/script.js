@@ -289,6 +289,19 @@ if (sliderTrack && sliderDots.length > 0) {
     slide.id = slide.id || `showcase-slide-${index + 1}`;
   });
 
+  const getSlideLabel = (slide, index) => {
+    const rawLabel = slide
+      ?.querySelector(".slide-name")
+      ?.textContent?.replace(/\s+/g, " ")
+      .trim();
+
+    return rawLabel || `Showcase slide ${index + 1}`;
+  };
+
+  sliderDots.forEach((dot, index) => {
+    dot.setAttribute("aria-label", getSlideLabel(slides[index], index));
+  });
+
   const clampSlideIndex = (index) => {
     return Math.max(0, Math.min(index, slides.length - 1));
   };

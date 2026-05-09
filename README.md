@@ -1,6 +1,6 @@
 # KelDel Court
 
-Standalone static landing page for the KelDel Court luxury residences project in WestLands, Accra.
+Standalone static landing page for the KelDel Court luxury residences project in Westlands, Accra.
 
 ## Project Structure
 
