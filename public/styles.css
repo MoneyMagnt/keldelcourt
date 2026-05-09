@@ -1604,12 +1604,12 @@ footer {
   }
 
   .hero-right {
-    min-height: 55vw;
+    min-height: clamp(24rem, 92vw, 34rem);
+    aspect-ratio: 3 / 4;
   }
 
   .hero-badge {
-    top: 1rem;
-    right: 1rem;
+    display: none;
   }
 
   .stat {
@@ -1843,6 +1843,19 @@ footer {
   object-fit: cover;
   transform: scale(1.02);
   filter: saturate(1.02) contrast(1.02);
+}
+
+@media (max-width: 768px) {
+  .hero-stage,
+  .hero-portal,
+  .hero-portal__frame {
+    inset: 0;
+  }
+
+  .hero-video {
+    object-position: center top;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
