@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="KelDel Court">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1c1c1e"/>
+      <stop offset="100%" stop-color="#2c2c2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="10" fill="url(#bg)"/>
+  <rect x="6" y="6" width="52" height="52" rx="8" fill="none" stroke="#c9a84c" stroke-width="2.5"/>
+  <path d="M18 16h6v14l12-14h8L31 31l14 17h-8L24 33v15h-6z" fill="#fdf6e3"/>
+  <path d="M18 48h28" stroke="#c9a84c" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

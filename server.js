@@ -1,7 +1,6 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const enquiryHandler = require("./api/enquiry");
 
 const rootDir = path.join(__dirname, "public");
 const defaultPort = Number(process.env.PORT || 3000);
@@ -140,20 +139,6 @@ function resolveStaticPath(requestPath) {
 const server = http.createServer(async (request, response) => {
   const requestUrl = new URL(request.url, `http://${request.headers.host || "localhost"}`);
   const pathname = requestUrl.pathname;
-
-  if (pathname === "/api/enquiry" || (pathname === "/" && request.method === "POST")) {
-    try {
-      await enquiryHandler(request, response);
-    } catch (error) {
-      response.statusCode = 500;
-      response.setHeader("Content-Type", "application/json; charset=utf-8");
-      response.end(JSON.stringify({
-        ok: false,
-        message: "The local enquiry server encountered an unexpected error.",
-      }));
-    }
-    return;
-  }
 
   if (request.method !== "GET" && request.method !== "HEAD") {
     response.statusCode = 405;

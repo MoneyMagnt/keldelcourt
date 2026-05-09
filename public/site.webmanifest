@@ -1,0 +1,21 @@
+{
+  "name": "KelDel Court",
+  "short_name": "KelDel Court",
+  "description": "KelDel Court Luxury Residences in WestLands, Accra.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1c1c1e",
+  "theme_color": "#1c1c1e",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
