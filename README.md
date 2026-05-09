@@ -18,7 +18,7 @@ Standalone landing page and enquiry flow for the KelDel Court luxury residences 
 This repo is now prepared for Cloudflare Pages:
 
 1. Connect the GitHub repo to a new Cloudflare Pages project.
-2. Set the build command to none.
+2. Set the build command to `npm run build` or `exit 0`.
 3. Set the build output directory to `public`.
 4. Add the enquiry delivery variables in `Settings` -> `Variables and Secrets`.
 5. Redeploy after adding or changing any variables.

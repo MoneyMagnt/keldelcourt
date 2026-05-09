@@ -4,6 +4,7 @@
   "private": true,
   "description": "Standalone landing page and enquiry flow for KelDel Court.",
   "scripts": {
+    "build": "node -e \"process.exit(0)\"",
     "dev": "node server.js",
     "start": "node server.js"
   }
