@@ -21,6 +21,32 @@ const contentTypes = {
   ".webp": "image/webp",
 };
 
+function setCommonHeaders(response) {
+  response.setHeader("X-Content-Type-Options", "nosniff");
+  response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.setHeader("X-Frame-Options", "SAMEORIGIN");
+}
+
+function setCacheHeaders(response, filePath) {
+  const relativePath = path.relative(rootDir, filePath).replace(/\\/g, "/");
+  const ext = path.extname(filePath).toLowerCase();
+  const immutableAsset =
+    relativePath.startsWith("assets/") ||
+    [".png", ".jpg", ".jpeg", ".svg", ".webp", ".ico"].includes(ext);
+
+  if (immutableAsset) {
+    response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    return;
+  }
+
+  if (ext === ".html") {
+    response.setHeader("Cache-Control", "no-cache");
+    return;
+  }
+
+  response.setHeader("Cache-Control", "public, max-age=3600");
+}
+
 function sendRangeNotSatisfiable(response, fileSize) {
   response.statusCode = 416;
   response.setHeader("Content-Range", `bytes */${fileSize}`);
@@ -32,6 +58,8 @@ function sendFile(request, response, filePath, stats) {
   const contentType = contentTypes[ext] || "application/octet-stream";
   const rangeHeader = request.headers.range;
 
+  setCommonHeaders(response);
+  setCacheHeaders(response, filePath);
   response.setHeader("Content-Type", contentType);
   response.setHeader("Accept-Ranges", "bytes");
   response.setHeader("Content-Length", stats.size);
@@ -119,6 +147,7 @@ function sendFile(request, response, filePath, stats) {
 }
 
 function sendNotFound(response) {
+  setCommonHeaders(response);
   response.statusCode = 404;
   response.setHeader("Content-Type", "text/plain; charset=utf-8");
   response.end("Not found");
@@ -141,8 +170,10 @@ const server = http.createServer(async (request, response) => {
   const pathname = requestUrl.pathname;
 
   if (request.method !== "GET" && request.method !== "HEAD") {
+    setCommonHeaders(response);
     response.statusCode = 405;
     response.setHeader("Content-Type", "text/plain; charset=utf-8");
+    response.setHeader("Allow", "GET, HEAD");
     response.end("Method not allowed");
     return;
   }

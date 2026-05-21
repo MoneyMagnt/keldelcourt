@@ -35,6 +35,16 @@ npm run dev
 
 This serves the static site from `public/`.
 
+### Quality check
+
+Run:
+
+```bash
+npm run check
+```
+
+This dependency-free audit checks the static pages for required SEO metadata, valid JSON-LD, duplicate IDs, missing local assets, image alt text, and external link safety.
+
 ## Notes
 
 - The site is now fully static. There is no email or enquiry backend in the build.

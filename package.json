@@ -5,6 +5,7 @@
   "description": "Standalone static landing page for KelDel Court.",
   "scripts": {
     "build": "node -e \"process.exit(0)\"",
+    "check": "node tools/audit-static-site.js",
     "dev": "node server.js",
     "start": "node server.js"
   }
