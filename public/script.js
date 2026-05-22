@@ -71,6 +71,123 @@ document.querySelectorAll("[data-scroll-target]").forEach((trigger) => {
   });
 });
 
+const salesWhatsAppNumber = "233244165817";
+const salesEmail = "delalikekeli0@gmail.com";
+
+function trackSiteEvent(eventName, params = {}) {
+  if (!eventName) {
+    return;
+  }
+
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, params);
+  }
+
+  if (typeof window.plausible === "function") {
+    window.plausible(eventName, {
+      props: params,
+    });
+  }
+}
+
+document.querySelectorAll("[data-track-click]").forEach((target) => {
+  target.addEventListener("click", () => {
+    trackSiteEvent(target.dataset.trackClick, {
+      label: target.textContent?.replace(/\s+/g, " ").trim() || target.href || "",
+      path: window.location.pathname,
+    });
+  });
+});
+
+function buildViewingMessage(form) {
+  const formData = new FormData(form);
+  const getValue = (name) => String(formData.get(name) || "").trim();
+
+  const lines = [
+    "Hi, I am interested in KelDel Court.",
+    "",
+    `Name: ${getValue("name")}`,
+    `Phone / WhatsApp: ${getValue("phone")}`,
+  ];
+
+  if (getValue("email")) {
+    lines.push(`Email: ${getValue("email")}`);
+  }
+
+  lines.push(`Preferred timing: ${getValue("timeframe") || "Not specified"}`);
+  lines.push(`Request: ${getValue("interest") || "Private viewing"}`);
+
+  if (getValue("message")) {
+    lines.push("");
+    lines.push(`Notes: ${getValue("message")}`);
+  }
+
+  lines.push("");
+  lines.push("Please send the floor plans, current pricing, and available times for a private viewing.");
+
+  return lines.join("\n");
+}
+
+function setFormStatus(form, message, isError = false) {
+  const status = form.querySelector("[data-form-status]");
+
+  if (!status) {
+    return;
+  }
+
+  status.textContent = message;
+  status.classList.toggle("is-error", isError);
+}
+
+function openWhatsAppWithMessage(message) {
+  const url = `https://wa.me/${salesWhatsAppNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener");
+}
+
+function openEmailWithMessage(message) {
+  const subject = "KelDel Court Private Viewing Request";
+  const url = `mailto:${salesEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+  window.location.href = url;
+}
+
+document.querySelectorAll("[data-viewing-form]").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      setFormStatus(form, "Please add your name and phone number first.", true);
+      return;
+    }
+
+    const message = buildViewingMessage(form);
+    setFormStatus(form, "Opening WhatsApp with your viewing request...");
+    trackSiteEvent("viewing_form_submit", {
+      method: "whatsapp",
+      path: window.location.pathname,
+    });
+    openWhatsAppWithMessage(message);
+  });
+
+  form.querySelectorAll("[data-email-request]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        setFormStatus(form, "Please add your name and phone number first.", true);
+        return;
+      }
+
+      const message = buildViewingMessage(form);
+      setFormStatus(form, "Opening your email app with the viewing request...");
+      trackSiteEvent("viewing_form_submit", {
+        method: "email",
+        path: window.location.pathname,
+      });
+      openEmailWithMessage(message);
+    });
+  });
+});
+
 const floorTabs = Array.from(document.querySelectorAll(".ftab[data-floor-target]"));
 const floorPanels = Array.from(document.querySelectorAll("[data-floor-panel]"));
 const floorVideos = Array.from(document.querySelectorAll(".floor-video"));

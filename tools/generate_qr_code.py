@@ -11,7 +11,7 @@ except ImportError as error:
     ) from error
 
 
-URL = "https://keldelcourt.com/"
+URL = "https://keldelcourt.com/visit.html?utm_source=site_banner&utm_medium=qr&utm_campaign=keldel_court_site"
 OUTPUT_STEM = "keldel-court-qr"
 FOREGROUND = "#1c1c1e"
 BACKGROUND = "#ffffff"
@@ -19,13 +19,13 @@ BACKGROUND = "#ffffff"
 
 def make_matrix():
     qr = qrcode.QRCode(
-        version=3,
+        version=None,
         error_correction=ERROR_CORRECT_M,
         box_size=1,
         border=0,
     )
     qr.add_data(URL)
-    qr.make(fit=False)
+    qr.make(fit=True)
     return qr.get_matrix()
 
 
