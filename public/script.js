@@ -115,7 +115,7 @@ function buildViewingMessage(form) {
   }
 
   lines.push(`Preferred timing: ${getValue("timeframe") || "Not specified"}`);
-  lines.push(`Request: ${getValue("interest") || "Private viewing"}`);
+  lines.push(`Request: ${getValue("interest") || "Private site visit"}`);
 
   if (getValue("message")) {
     lines.push("");
@@ -123,7 +123,7 @@ function buildViewingMessage(form) {
   }
 
   lines.push("");
-  lines.push("Please send the floor plans, current pricing, and available times for a private viewing.");
+  lines.push("Please send the floor plans, current pricing, and available times for a private site visit.");
 
   return lines.join("\n");
 }
@@ -145,7 +145,7 @@ function openWhatsAppWithMessage(message) {
 }
 
 function openEmailWithMessage(message) {
-  const subject = "KelDel Court Private Viewing Request";
+  const subject = "KelDel Court Private Site Visit Request";
   const url = `mailto:${salesEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
   window.location.href = url;
 }
@@ -161,7 +161,7 @@ document.querySelectorAll("[data-viewing-form]").forEach((form) => {
     }
 
     const message = buildViewingMessage(form);
-    setFormStatus(form, "Opening WhatsApp with your viewing request...");
+    setFormStatus(form, "Opening WhatsApp with your site visit request...");
     trackSiteEvent("viewing_form_submit", {
       method: "whatsapp",
       path: window.location.pathname,
@@ -178,7 +178,7 @@ document.querySelectorAll("[data-viewing-form]").forEach((form) => {
       }
 
       const message = buildViewingMessage(form);
-      setFormStatus(form, "Opening your email app with the viewing request...");
+      setFormStatus(form, "Opening your email app with the site visit request...");
       trackSiteEvent("viewing_form_submit", {
         method: "email",
         path: window.location.pathname,
