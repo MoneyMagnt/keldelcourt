@@ -100,24 +100,6 @@ document.querySelectorAll("[data-track-click]").forEach((target) => {
   });
 });
 
-document.querySelectorAll("[data-splat-embed]").forEach((container) => {
-  const embedUrl = container.dataset.splatEmbed?.trim();
-  const media = container.querySelector(".splat-preview__media");
-
-  if (!embedUrl || !media || !/^https?:\/\//i.test(embedUrl)) {
-    return;
-  }
-
-  const iframe = document.createElement("iframe");
-  iframe.src = embedUrl;
-  iframe.title = "KelDel Court interactive 3D virtual tour";
-  iframe.loading = "lazy";
-  iframe.allow = "fullscreen; xr-spatial-tracking; gyroscope; accelerometer";
-  iframe.referrerPolicy = "strict-origin-when-cross-origin";
-
-  media.replaceChildren(iframe);
-});
-
 function buildViewingMessage(form) {
   const formData = new FormData(form);
   const getValue = (name) => String(formData.get(name) || "").trim();
