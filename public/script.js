@@ -2,6 +2,7 @@ const pageBody = document.body;
 const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
 const heroVideo = document.querySelector(".hero-video");
+const desktopHeroMedia = window.matchMedia("(min-width: 1025px)");
 
 function closeMenu() {
   if (!navToggle || !navMenu) {
@@ -97,6 +98,24 @@ document.querySelectorAll("[data-track-click]").forEach((target) => {
       path: window.location.pathname,
     });
   });
+});
+
+document.querySelectorAll("[data-splat-embed]").forEach((container) => {
+  const embedUrl = container.dataset.splatEmbed?.trim();
+  const media = container.querySelector(".splat-preview__media");
+
+  if (!embedUrl || !media || !/^https?:\/\//i.test(embedUrl)) {
+    return;
+  }
+
+  const iframe = document.createElement("iframe");
+  iframe.src = embedUrl;
+  iframe.title = "KelDel Court interactive 3D virtual tour";
+  iframe.loading = "lazy";
+  iframe.allow = "fullscreen; xr-spatial-tracking; gyroscope; accelerometer";
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+  media.replaceChildren(iframe);
 });
 
 function buildViewingMessage(form) {
@@ -241,7 +260,11 @@ function startVideoPlayback(video, { resetToStart = false } = {}) {
 }
 
 function playHeroVideo() {
-  if (!heroVideo || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (
+    !heroVideo ||
+    desktopHeroMedia.matches ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
     return;
   }
 
@@ -371,6 +394,23 @@ if (heroVideo) {
     heroObserver.observe(heroSection);
   } else {
     window.addEventListener("load", playHeroVideo, { once: true });
+  }
+}
+
+if (heroVideo) {
+  const handleHeroMediaChange = () => {
+    if (desktopHeroMedia.matches) {
+      heroVideo.pause();
+      return;
+    }
+
+    playHeroVideo();
+  };
+
+  if (typeof desktopHeroMedia.addEventListener === "function") {
+    desktopHeroMedia.addEventListener("change", handleHeroMediaChange);
+  } else if (typeof desktopHeroMedia.addListener === "function") {
+    desktopHeroMedia.addListener(handleHeroMediaChange);
   }
 }
 

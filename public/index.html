@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="4 bedroom houses for sale in Westlands (West Legon), Accra. Explore luxury multi level residences with double height living, private terraces, and pricing from $450,000.">
   <meta name="twitter:image" content="https://keldelcourt.com/og-card.jpg">
   <title>4 Bedroom Houses for Sale in Westlands, Accra | KelDel Court</title>
-  <link rel="preload" as="image" href="/assets/hero-exterior.png">
+  <link rel="preload" as="image" href="/assets/hero-exterior.png" fetchpriority="high">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png">
@@ -253,9 +253,18 @@
           <div class="hero-portal">
             <div class="hero-portal__glow" aria-hidden="true"></div>
             <div class="hero-portal__frame">
+              <img
+                class="hero-poster"
+                src="assets/hero-exterior.png"
+                alt="KelDel Court, Westlands (West Legon), Accra"
+                width="1536"
+                height="1009"
+                fetchpriority="high"
+                decoding="async"
+              >
               <video
                 class="hero-video"
-                data-src="assets/animation.mp4"
+                data-src="assets/animation-3d-teaser.mp4"
                 poster="assets/hero-exterior.png"
                 autoplay
                 muted
