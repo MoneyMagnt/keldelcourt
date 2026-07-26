@@ -1,8 +1,111 @@
 const pageBody = document.body;
 const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
+const siteNav = document.querySelector(".site-nav");
+const scrollProgress = document.querySelector(".scroll-progress");
 const heroVideo = document.querySelector(".hero-video");
 const desktopHeroMedia = window.matchMedia("(min-width: 1025px)");
+const reducedMotionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function runOpeningIntro() {
+  const introTemplate = `
+    <div class="site-intro__media">
+      <img src="assets/hero-exterior.png" alt="KelDel Court exterior" width="1536" height="1009">
+    </div>
+    <div class="site-intro__inner">
+      <div class="site-intro__line site-intro__line--top"></div>
+      <div class="site-intro__brand">
+        <span>Kel</span><span>Del</span>
+      </div>
+      <div class="site-intro__name">Court</div>
+      <div class="site-intro__caption">Luxury Residences &middot; Westlands, Accra</div>
+      <div class="site-intro__line site-intro__line--bottom"></div>
+    </div>
+    <div class="site-intro__count">
+      <span class="site-intro__count-value">00</span>
+      <span>Opening the residence</span>
+    </div>
+    <div class="site-intro__progress"><span></span></div>
+  `;
+  let intro = document.querySelector(".site-intro");
+
+  if (reducedMotionMedia.matches) {
+    intro?.remove();
+    pageBody.classList.add("is-loaded", "intro-complete");
+    return;
+  }
+
+  if (!intro) {
+    intro = document.createElement("div");
+    intro.className = "site-intro";
+    intro.setAttribute("aria-hidden", "true");
+    intro.innerHTML = introTemplate;
+    pageBody.prepend(intro);
+  }
+
+  pageBody.classList.add("intro-active");
+  const countValue = intro.querySelector(".site-intro__count-value");
+  const progressBar = intro.querySelector(".site-intro__progress span");
+  const introStartedAt = window.performance.now();
+  const introCountDuration = 1550;
+
+  function updateIntroCount(now) {
+    if (!intro.isConnected || intro.classList.contains("is-exiting")) {
+      return;
+    }
+
+    const progress = Math.min(1, (now - introStartedAt) / introCountDuration);
+    const easedProgress = 1 - Math.pow(1 - progress, 3);
+    const count = Math.round(easedProgress * 100);
+
+    if (countValue) {
+      countValue.textContent = String(count).padStart(2, "0");
+    }
+
+    if (progressBar) {
+      progressBar.style.transform = `scaleX(${easedProgress})`;
+    }
+
+    if (progress < 1) {
+      window.requestAnimationFrame(updateIntroCount);
+    }
+  }
+
+  requestAnimationFrame(() => {
+    intro.classList.add("is-ready");
+    window.requestAnimationFrame(updateIntroCount);
+  });
+
+  window.setTimeout(() => {
+    pageBody.classList.add("is-loaded");
+    intro.classList.add("is-exiting");
+  }, 1650);
+
+  window.setTimeout(() => {
+    intro.remove();
+    pageBody.classList.remove("intro-active");
+    pageBody.classList.add("intro-complete");
+  }, 2400);
+}
+
+runOpeningIntro();
+
+function updateScrollEffects() {
+  const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const scrollRatio = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+  const heroProgress = Math.min(1, Math.max(0, window.scrollY / Math.max(1, window.innerHeight)));
+
+  siteNav?.classList.toggle("is-scrolled", window.scrollY > 12);
+  pageBody.style.setProperty("--hero-scroll", heroProgress.toFixed(4));
+
+  if (scrollProgress) {
+    scrollProgress.style.transform = `scaleX(${scrollRatio})`;
+  }
+}
+
+updateScrollEffects();
+window.addEventListener("scroll", updateScrollEffects, { passive: true });
+window.addEventListener("resize", updateScrollEffects);
 
 function closeMenu() {
   if (!navToggle || !navMenu) {
@@ -140,6 +243,41 @@ function setFormStatus(form, message, isError = false) {
   status.classList.toggle("is-error", isError);
 }
 
+function isValidPhoneNumber(value) {
+  const trimmedValue = String(value || "").trim();
+
+  if (!trimmedValue) {
+    return false;
+  }
+
+  if (!/^\+?[0-9() .-]+$/.test(trimmedValue)) {
+    return false;
+  }
+
+  const digits = trimmedValue.replace(/\D/g, "");
+  return digits.length >= 9 && digits.length <= 15;
+}
+
+function validateViewingForm(form) {
+  const phoneInput = form.querySelector('input[name="phone"]');
+
+  if (phoneInput) {
+    phoneInput.setCustomValidity("");
+
+    if (phoneInput.value && !isValidPhoneNumber(phoneInput.value)) {
+      phoneInput.setCustomValidity("Enter a valid phone or WhatsApp number.");
+    }
+  }
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    setFormStatus(form, "Please add your name and a valid phone number first.", true);
+    return false;
+  }
+
+  return true;
+}
+
 function openWhatsAppWithMessage(message) {
   const url = `https://wa.me/${salesWhatsAppNumber}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank", "noopener");
@@ -152,12 +290,17 @@ function openEmailWithMessage(message) {
 }
 
 document.querySelectorAll("[data-viewing-form]").forEach((form) => {
+  const phoneInput = form.querySelector('input[name="phone"]');
+
+  phoneInput?.addEventListener("input", () => {
+    phoneInput.setCustomValidity("");
+    setFormStatus(form, "");
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      setFormStatus(form, "Please add your name and phone number first.", true);
+    if (!validateViewingForm(form)) {
       return;
     }
 
@@ -172,9 +315,7 @@ document.querySelectorAll("[data-viewing-form]").forEach((form) => {
 
   form.querySelectorAll("[data-email-request]").forEach((button) => {
     button.addEventListener("click", () => {
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        setFormStatus(form, "Please add your name and phone number first.", true);
+      if (!validateViewingForm(form)) {
         return;
       }
 
@@ -245,7 +386,7 @@ function playHeroVideo() {
   if (
     !heroVideo ||
     desktopHeroMedia.matches ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    reducedMotionMedia.matches
   ) {
     return;
   }
@@ -612,5 +753,65 @@ if ("IntersectionObserver" in window && revealTargets.length > 0) {
 } else {
   revealTargets.forEach((target) => {
     target.classList.add("is-visible");
+  });
+}
+
+const motionImageTargets = Array.from(
+  document.querySelectorAll(".img-stack > img, .vcard-img, .slide-img, .scan-preview, .tour-card")
+);
+
+if (!reducedMotionMedia.matches && "IntersectionObserver" in window && motionImageTargets.length > 0) {
+  pageBody.classList.add("motion-images-ready");
+
+  const imageRevealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        entry.target.classList.add("is-motion-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -8% 0px",
+    }
+  );
+
+  motionImageTargets.forEach((target, index) => {
+    target.classList.add("motion-image");
+    target.style.setProperty("--motion-delay", `${Math.min(index % 3, 2) * 90}ms`);
+    imageRevealObserver.observe(target);
+  });
+}
+
+const tiltTargets = Array.from(document.querySelectorAll("[data-tilt]"));
+const canUseTilt =
+  tiltTargets.length > 0 &&
+  !reducedMotionMedia.matches &&
+  window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+if (canUseTilt) {
+  tiltTargets.forEach((target) => {
+    target.addEventListener("pointermove", (event) => {
+      const bounds = target.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+      const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+      const depth = target.classList.contains("hero-right") || target.classList.contains("scan-preview") ? 5 : 2.5;
+
+      target.style.setProperty("--tilt-x", `${(-y * depth).toFixed(2)}deg`);
+      target.style.setProperty("--tilt-y", `${(x * depth).toFixed(2)}deg`);
+      target.style.setProperty("--tilt-glow-x", `${((x + 0.5) * 100).toFixed(0)}%`);
+      target.style.setProperty("--tilt-glow-y", `${((y + 0.5) * 100).toFixed(0)}%`);
+      target.classList.add("is-tilting");
+    });
+
+    target.addEventListener("pointerleave", () => {
+      target.classList.remove("is-tilting");
+      target.style.setProperty("--tilt-x", "0deg");
+      target.style.setProperty("--tilt-y", "0deg");
+    });
   });
 }

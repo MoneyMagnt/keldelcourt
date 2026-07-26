@@ -29,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=cinematic-20260726-2">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -63,6 +63,26 @@
   </script>
 </head>
 <body>
+  <div class="site-intro" aria-hidden="true">
+    <div class="site-intro__media">
+      <img src="assets/hero-exterior.png" alt="KelDel Court exterior" width="1536" height="1009">
+    </div>
+    <div class="site-intro__inner">
+      <div class="site-intro__line site-intro__line--top"></div>
+      <div class="site-intro__brand">
+        <span>Kel</span><span>Del</span>
+      </div>
+      <div class="site-intro__name">Court</div>
+      <div class="site-intro__caption">Luxury Residences &middot; Westlands, Accra</div>
+      <div class="site-intro__line site-intro__line--bottom"></div>
+    </div>
+    <div class="site-intro__count">
+      <span class="site-intro__count-value">00</span>
+      <span>Opening the residence</span>
+    </div>
+    <div class="site-intro__progress"><span></span></div>
+  </div>
+  <div class="scroll-progress" aria-hidden="true"></div>
   <nav class="site-nav" aria-label="Primary">
     <a class="nav-brand" href="/" aria-label="KelDel Court home">
       <span class="nav-logo">Kel<span>Del</span> Court</span>
@@ -104,7 +124,7 @@
             <a class="btn-ghost" href="#viewing" data-track-click="scan_book_viewing">Book Private Site Visit</a>
           </div>
         </div>
-        <div class="scan-preview">
+        <div class="scan-preview" data-tilt>
           <img src="/assets/hero-exterior.png" alt="Finished exterior preview of KelDel Court" loading="eager" decoding="async">
         </div>
       </div>
@@ -118,27 +138,27 @@
           Scan, look, decide. If the home fits your brief, book a private site visit.
         </p>
         <div class="virtual-tour-grid" aria-label="KelDel Court room preview">
-          <a class="tour-card tour-card--large" href="/#showcase" data-track-click="tour_living">
+          <a class="tour-card tour-card--large" href="/#showcase" data-track-click="tour_living" data-tilt>
             <img src="/assets/showcase-living.png" alt="KelDel Court living area" loading="lazy" decoding="async">
             <span>Living Area</span>
           </a>
-          <a class="tour-card" href="/#showcase" data-track-click="tour_dining">
+          <a class="tour-card" href="/#showcase" data-track-click="tour_dining" data-tilt>
             <img src="/assets/showcase-kitchen.png" alt="KelDel Court kitchen and dining" loading="lazy" decoding="async">
             <span>Kitchen &amp; Dining</span>
           </a>
-          <a class="tour-card" href="/#showcase" data-track-click="tour_master">
+          <a class="tour-card" href="/#showcase" data-track-click="tour_master" data-tilt>
             <img src="/assets/showcase-bedroom.png" alt="KelDel Court master bedroom" loading="lazy" decoding="async">
             <span>Master Bedroom</span>
           </a>
-          <a class="tour-card" href="/#showcase" data-track-click="tour_closet">
+          <a class="tour-card" href="/#showcase" data-track-click="tour_closet" data-tilt>
             <img src="/assets/showcase-closet.png" alt="KelDel Court walk in closet" loading="lazy" decoding="async">
             <span>Walk In Closet</span>
           </a>
-          <a class="tour-card" href="/#showcase" data-track-click="tour_bath">
+          <a class="tour-card" href="/#showcase" data-track-click="tour_bath" data-tilt>
             <img src="/assets/showcase-bathroom.png" alt="KelDel Court master bathroom" loading="lazy" decoding="async">
             <span>Master Bath</span>
           </a>
-          <a class="tour-card" href="/#showcase" data-track-click="tour_office">
+          <a class="tour-card" href="/#showcase" data-track-click="tour_office" data-tilt>
             <img src="/assets/showcase-office.png" alt="KelDel Court private office" loading="lazy" decoding="async">
             <span>Office</span>
           </a>
@@ -170,7 +190,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="scanViewingPhone">Phone / WhatsApp</label>
-                <input class="form-input" id="scanViewingPhone" name="phone" type="tel" autocomplete="tel" placeholder="+233..." required>
+                <input class="form-input" id="scanViewingPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="9" maxlength="20" pattern="[+0-9() .-]{9,20}" title="Enter a valid phone or WhatsApp number." placeholder="+233..." required>
               </div>
             </div>
 
@@ -183,8 +203,10 @@
                 <label class="form-label" for="scanViewingTimeframe">Preferred timing</label>
                 <select class="form-select" id="scanViewingTimeframe" name="timeframe">
                   <option value="This week">This week</option>
+                  <option value="Weekday morning">Weekday morning</option>
+                  <option value="Weekday afternoon">Weekday afternoon</option>
+                  <option value="Saturday">Saturday</option>
                   <option value="Next week">Next week</option>
-                  <option value="This month">This month</option>
                   <option value="I am flexible">I am flexible</option>
                 </select>
               </div>
@@ -270,6 +292,6 @@
     <div class="footer-copy">&copy; 2026 KelDel Court Luxury Residences. All rights reserved.</div>
   </footer>
 
-  <script src="/script.js"></script>
+  <script src="/script.js?v=cinematic-20260726-2"></script>
 </body>
 </html>

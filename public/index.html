@@ -33,7 +33,7 @@
     href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Urbanist:wght@300;400;500;600;700&display=swap"
     rel="stylesheet"
   >
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=cinematic-20260726-2">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -183,6 +183,26 @@
   </script>
 </head>
 <body>
+  <div class="site-intro" aria-hidden="true">
+    <div class="site-intro__media">
+      <img src="assets/hero-exterior.png" alt="KelDel Court exterior" width="1536" height="1009">
+    </div>
+    <div class="site-intro__inner">
+      <div class="site-intro__line site-intro__line--top"></div>
+      <div class="site-intro__brand">
+        <span>Kel</span><span>Del</span>
+      </div>
+      <div class="site-intro__name">Court</div>
+      <div class="site-intro__caption">Luxury Residences &middot; Westlands, Accra</div>
+      <div class="site-intro__line site-intro__line--bottom"></div>
+    </div>
+    <div class="site-intro__count">
+      <span class="site-intro__count-value">00</span>
+      <span>Opening the residence</span>
+    </div>
+    <div class="site-intro__progress"><span></span></div>
+  </div>
+  <div class="scroll-progress" aria-hidden="true"></div>
   <nav class="site-nav" aria-label="Primary">
     <a class="nav-brand" href="#home" aria-label="KelDel Court home">
       <span class="nav-logo">Kel<span>Del</span> Court</span>
@@ -381,7 +401,7 @@
 
         <div class="slider-wrap">
           <div class="slider-track" id="sliderTrack">
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-living.png" alt="Living &amp; Dining Room &middot; KelDel Court" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -402,7 +422,7 @@
               </div>
             </article>
 
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-kitchen.png" alt="Gourmet Kitchen &middot; KelDel Court" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -423,7 +443,7 @@
               </div>
             </article>
 
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-bedroom.png" alt="Master Bedroom &middot; KelDel Court" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -444,7 +464,7 @@
               </div>
             </article>
 
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-closet.png" alt="Walk in Closet &middot; KelDel Court" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -466,7 +486,7 @@
               </div>
             </article>
 
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-bathroom.png" alt="Master Spa Bathroom &middot; KelDel Court" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -487,7 +507,7 @@
               </div>
             </article>
 
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-office.png" alt="Private Office &middot; KelDel Court" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -508,7 +528,7 @@
               </div>
             </article>
 
-            <article class="slide">
+            <article class="slide" data-tilt>
               <div class="slide-img">
                 <img src="assets/showcase-exterior.png" alt="KelDel Court exterior" loading="lazy" decoding="async">
                 <div class="slide-img-overlay">
@@ -610,7 +630,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="viewingPhone">Phone / WhatsApp</label>
-                <input class="form-input" id="viewingPhone" name="phone" type="tel" autocomplete="tel" placeholder="+233..." required>
+                <input class="form-input" id="viewingPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="9" maxlength="20" pattern="[+0-9() .-]{9,20}" title="Enter a valid phone or WhatsApp number." placeholder="+233..." required>
               </div>
             </div>
 
@@ -623,8 +643,10 @@
                 <label class="form-label" for="viewingTimeframe">Preferred timing</label>
                 <select class="form-select" id="viewingTimeframe" name="timeframe">
                   <option value="This week">This week</option>
+                  <option value="Weekday morning">Weekday morning</option>
+                  <option value="Weekday afternoon">Weekday afternoon</option>
+                  <option value="Saturday">Saturday</option>
                   <option value="Next week">Next week</option>
-                  <option value="This month">This month</option>
                   <option value="I am flexible">I am flexible</option>
                 </select>
               </div>
@@ -762,6 +784,6 @@
     <div class="footer-copy">&copy; 2026 KelDel Court Luxury Residences. All rights reserved.</div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=cinematic-20260726-2"></script>
 </body>
 </html>
