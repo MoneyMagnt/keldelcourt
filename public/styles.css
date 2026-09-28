@@ -39,6 +39,7 @@ html {
 #home,
 #about,
 #showcase,
+#progress,
 #location,
 #contact {
   scroll-margin-top: 5.75rem;
@@ -1760,6 +1761,158 @@ body.is-loaded .hero-left > *:nth-child(7) {
   object-fit: cover;
   background: #03070f;
   filter: saturate(1.02) contrast(1.02) brightness(0.9);
+}
+
+.progress-wrap {
+  background:
+    radial-gradient(circle at bottom left, rgba(201, 168, 76, 0.1), transparent 24rem),
+    var(--off);
+}
+
+.progress-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress-stages li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--gray-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.progress-stages li::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+}
+
+.progress-stages .is-done {
+  color: var(--charcoal);
+}
+
+.progress-stages .is-done::before {
+  border-color: var(--amber-mid);
+  background: var(--amber-mid);
+}
+
+.progress-stages .is-current {
+  border-color: var(--amber);
+  background: var(--amber-pale);
+  color: var(--amber-mid);
+}
+
+.progress-stages .is-current::before {
+  border-color: var(--amber);
+  background: var(--amber);
+  box-shadow: 0 0 0 0.25rem rgba(201, 168, 76, 0.25);
+}
+
+.progress-videos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 20rem));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.progress-video {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.progress-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 368 / 640;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  background: var(--charcoal);
+  box-shadow: var(--shadow-card);
+}
+
+.progress-video figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--charcoal);
+}
+
+.progress-video figcaption span {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber-mid);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.progress-cta p {
+  margin: 0;
+  color: var(--gray);
+}
+
+.progress-cta .btn-dark {
+  padding: 0 1.8rem;
+}
+
+@media (max-width: 768px) {
+  .progress-videos {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.5rem;
+  }
+
+  .progress-stages {
+    gap: 0.45rem;
+  }
+
+  .progress-stages li {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.68rem;
+  }
+
+  .progress-video {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
+  }
+
+  .progress-cta .btn-dark {
+    width: 100%;
+  }
 }
 
 .location-wrap {
