@@ -21,3 +21,6 @@ public/assets/floor-*-detail.png
 # Scratch / ad hoc reference files
 reference/zyragh-events.html
 tmp-extract.ps1
+
+# macOS
+.DS_Store

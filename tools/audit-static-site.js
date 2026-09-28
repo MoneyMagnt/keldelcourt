@@ -35,8 +35,10 @@ function publicPathExists(value) {
     ? cleanValue.slice(1)
     : cleanValue;
   const targetPath = path.resolve(publicDir, relativePath);
+  // Clean URLs (/visit) resolve to visit.html, as on Cloudflare Pages
+  const candidates = path.extname(targetPath) ? [targetPath] : [targetPath, `${targetPath}.html`];
 
-  return targetPath.startsWith(publicDir) && fs.existsSync(targetPath);
+  return targetPath.startsWith(publicDir) && candidates.some((candidate) => fs.existsSync(candidate));
 }
 
 function getAttribute(tag, attributeName) {
