@@ -154,7 +154,11 @@ function sendNotFound(response) {
 }
 
 function resolveStaticPath(requestPath) {
-  const normalizedPath = requestPath === "/" ? "/index.html" : requestPath;
+  // Mirror Cloudflare Pages clean URLs: /visit serves visit.html
+  let normalizedPath = requestPath === "/" ? "/index.html" : requestPath;
+  if (!path.extname(normalizedPath)) {
+    normalizedPath += ".html";
+  }
   const safePath = path.normalize(normalizedPath).replace(/^(\.\.[\\/])+/, "");
   const absolutePath = path.join(rootDir, safePath);
 
