@@ -203,6 +203,27 @@ document.querySelectorAll("[data-track-click]").forEach((target) => {
   });
 });
 
+document.querySelectorAll("video[data-track-video]").forEach((video) => {
+  video.addEventListener("play", () => {
+    // Pause any other progress video so only one plays at a time.
+    document.querySelectorAll("video[data-track-video]").forEach((other) => {
+      if (other !== video) {
+        other.pause();
+      }
+    });
+
+    if (video.dataset.tracked) {
+      return;
+    }
+
+    video.dataset.tracked = "true";
+    trackSiteEvent("video_play", {
+      video: video.dataset.trackVideo,
+      path: window.location.pathname,
+    });
+  });
+});
+
 function buildViewingMessage(form) {
   const formData = new FormData(form);
   const getValue = (name) => String(formData.get(name) || "").trim();
